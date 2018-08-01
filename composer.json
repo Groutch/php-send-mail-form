@@ -1,0 +1,10 @@
+{
+    "name": "groutch/php-send-mail-form",
+    "authors": [
+        {
+            "name": "Groutch",
+            "email": "hurizen1@hotmail.com"
+        }
+    ],
+    "require": {}
+}
