@@ -80,13 +80,11 @@
                 $mess = "<b>".$mess."</b>";
             }
             if (isValidMail($listmail)){
-                //mail($addmail, 'Mon Sujet', $mess, $headers);
-            echo "envoi du mail";
+                mail($addmail, 'Mon Sujet', $mess, $headers);
             ?>
                 <style>#valmess {display: block;}</style>
             <?php
             }else{
-                echo "non envoi du mail";
                 ?>
                 <style>#errmess {display: block;}</style>
             <?php 
