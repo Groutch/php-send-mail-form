@@ -42,36 +42,58 @@
     </div>
 
     <?php
+        //fonction qui vérifie si une liste d'email est correctement formatée
+        //(le type email dans le form oblige à avoir un @ mais ne vérifie pas si un mail est de la forme xxxxx@yyyy.zzz)
+        function isValidMail($varListMail){
+            $okmail=true;
+            foreach($varListMail as $onemail){
+                $okmail = $okmail && filter_var($onemail, FILTER_VALIDATE_EMAIL);
+            }
+            return $okmail;
+        }
+        function formatMessage($message){
+            if (!$message) {
+                throw new Exception('Message Vide.');
+            }
+            //escape html char + adding carret return
+            $messFormated =nl2br(htmlspecialchars($message));
+            //here is emoji display
+            $messFormated = str_replace(":)", "&#x1f60a;", $messFormated); // :)
+            $messFormated = str_replace("B)", "&#x1f60e;", $messFormated); // B)
+            $messFormated = str_replace(":(", "&#x2639e;", $messFormated); // :(
+            $messFormated = str_replace(":'(", "&#x1f622;", $messFormated); // :'(
+            $messFormated = str_replace(":|", "&#x1f610;", $messFormated); // :|
+            return $messFormated;
+        }
         $headers = 'MIME-Version: 1.0' . "\r\n";
         $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+        $headers .= 'From: groutch@groutch.gro' . "\r\n";
         if(isset($_POST['email']) && isset($_POST['text'])){
+            try{
+                $mess = formatMessage($_POST['text']);
+            }catch(Exception $e){
+                 echo 'Exception reçue : ',  $e->getMessage(), "\n";
+            }
             $addmail=$_POST['email'];
-            $mess=htmlspecialchars($_POST['text']);
             $listmail= explode(",", $addmail);
             if($_POST['style'][0]=="gras"){
                 $mess = "<b>".$mess."</b>";
             }
-            $okmail=true;
-            foreach($listmail as $onemail){
-                $okmail = $okmail && filter_var($onemail, FILTER_VALIDATE_EMAIL);
-            }
-            if ($okmail){
-                try{
-                    mail($addmail, 'Mon Sujet', $mess, $headers);
-                } catch(Exception $e) {
-                    echo 'Exception reçue : ',  $e->getMessage(), "\n";
-                } finally {
+            if (isValidMail($listmail)){
+                //mail($addmail, 'Mon Sujet', $mess, $headers);
+            echo "envoi du mail";
             ?>
                 <style>#valmess {display: block;}</style>
             <?php
-                }
-            }else{ ?>
+            }else{
+                echo "non envoi du mail";
+                ?>
                 <style>#errmess {display: block;}</style>
             <?php 
             }
         }
     ?>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-rc.2/js/materialize.min.js"></script>
 </body>
 
 </html>
